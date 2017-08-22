@@ -36,7 +36,7 @@ int get_asuspi_info(asuspi_info *info)
 		return -1;
 	while(!feof(fp)) 
 	{
-		fgets(buffer, sizeof(buffer) , fp);
+		if(fgets(buffer, sizeof(buffer) , fp) != NULL);
 		sscanf(buffer, "Hardware	: %s", hardware);
 		if (strcmp(hardware, "Rockchip") == 0) 
 		{

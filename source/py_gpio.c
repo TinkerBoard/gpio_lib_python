@@ -251,7 +251,7 @@ static PyObject *py_setup_channel(PyObject *self, PyObject *args, PyObject *kwar
 		if(setupflag==0)
 		{
 			PyErr_SetString(PyExc_RuntimeError, "This gpio is set to other function!");
-			return NULL;
+			return (int)NULL;
 		}
 		gpio_direction[gpio] = direction;
 		return 1;

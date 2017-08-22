@@ -71,7 +71,7 @@ int gpio_export(unsigned int gpio)
        return -1;
 
     len = snprintf(str_gpio, sizeof(str_gpio), "%d", gpio);
-    write(fd, str_gpio, len);
+    if(write(fd, str_gpio, len) != -1);
     close(fd);
 
     return 0;
@@ -86,7 +86,7 @@ int gpio_unexport(unsigned int gpio)
         return -1;
 
     len = snprintf(str_gpio, sizeof(str_gpio), "%d", gpio);
-    write(fd, str_gpio, len);
+    if(write(fd, str_gpio, len) != -1);
     close(fd);
 
     return 0;
@@ -104,9 +104,13 @@ int gpio_set_direction(unsigned int gpio, unsigned int in_flag)
     }
 
     if (in_flag)
-        write(fd, "in", 3);
+	{
+        if (write(fd, "in", 3) != -1);
+	}
     else
-        write(fd, "out", 4);
+	{
+        if (write(fd, "out", 4) != -1);
+	}
 
     close(fd);
     return 0;
@@ -122,7 +126,7 @@ int gpio_set_edge(unsigned int gpio, unsigned int edge)
     if ((fd = open(filename, O_WRONLY)) < 0)
         return -1;
 
-    write(fd, stredge[edge], strlen(stredge[edge]) + 1);
+    if(write(fd, stredge[edge], strlen(stredge[edge]) + 1) != -1);
     close(fd);
     return 0;
 }
@@ -421,6 +425,7 @@ int event_detected(unsigned int gpio)
 
 void event_cleanup(unsigned int gpio)
 // gpio of -666 means clean every channel used
+// It is ridiculous.
 {
     struct gpios *g = gpio_list;
     struct gpios *temp = NULL;
@@ -428,18 +433,26 @@ void event_cleanup(unsigned int gpio)
     while (g != NULL)
 	{
         if ((gpio == -666) || (g->gpio == gpio))
+		{
             temp = g->next;
-            remove_edge_detect(g->gpio);
-            g = temp;
+		}
+        remove_edge_detect(g->gpio);
+        g = temp;
     }
     if (gpio_list == NULL)
+	{
         if (epfd_blocking != -1)
+		{
             close(epfd_blocking);
-            epfd_blocking = -1;
-        if (epfd_thread != -1)
-            close(epfd_thread);
-            epfd_thread = -1;
-        thread_running = 0;
+		}
+	}
+    epfd_blocking = -1;
+    if (epfd_thread != -1)
+	{
+        close(epfd_thread);
+	}
+    epfd_thread = -1;
+    thread_running = 0;
 }
 
 void event_cleanup_all(void)
