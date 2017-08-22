@@ -47,11 +47,11 @@ int get_asuspi_info(asuspi_info *info)
 	fclose(fp);
 
 	if (!found)
-	return -1;
+		return -1;
 	info->p1_revision = 3;
-	info->type = "ASUS Pi";
-	info->processor = "ROCKCHIP3368";
-	info->manufacturer = "asus";
+	info->type = "Tinker Board";
+	info->processor = "ROCKCHIP3288";
+	info->manufacturer = "ASUS";
 	info->ram = "1024M";
 
 	return 0;
