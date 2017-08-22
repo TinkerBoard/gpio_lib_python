@@ -148,21 +148,7 @@ void output_gpio(int gpio, int value)
 
 int input_gpio(int gpio)
 {
-	int value, mask;
-	
-	if(0<gpio&&gpio<=24)
-	{
-		mask = (1 << gpio%32);
-		value = ((*(gpio0[gpio/32]+GPIO_EXT_PORTA_OFFSET/4)) & mask)>>(gpio%32);  
-	}
-	else
-	{
-		mask = (1 << (gpio+8)%32);
-		value = ((*(gpio0[(gpio+8)/32]+GPIO_EXT_PORTA_OFFSET/4)) & mask)>>((gpio+8)%32);
-	}
-
-	//printf("input_gpio = %d,input value = %x\n",gpio,value);
-	return value;
+	return asus_digitalRead(gpio);
 }
 
 void cleanup(void)
