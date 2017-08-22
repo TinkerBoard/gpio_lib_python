@@ -37,8 +37,8 @@ void cleanup(void);
 #define SETUP_MALLOC_FAIL 2
 #define SETUP_MMAP_FAIL   3
 
-#define INPUT  1 // is really 0 for control register!
-#define OUTPUT 0 // is really 1 for control register!
+#define INPUT  0 // is really 0 for control register!
+#define OUTPUT 1 // is really 1 for control register!
 #define ALT0   4
 
 #define HIGH 1

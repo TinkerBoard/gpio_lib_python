@@ -44,4 +44,4 @@ setup(name             = 'ASUS.GPIO',
       url              = 'http://sourceforge.net/projects/raspberry-gpio-python/',
       classifiers      = classifiers,
       packages         = ['ASUS'],
-      ext_modules      = [Extension('ASUS.GPIO', ['source/py_gpio.c', 'source/c_gpio.c', 'source/cpuinfo.c', 'source/event_gpio.c', 'source/soft_pwm.c', 'source/py_pwm.c', 'source/common.c', 'source/constants.c'])])
+      ext_modules      = [Extension('ASUS.GPIO', ['source/py_gpio.c', 'source/c_gpio.c', 'source/cpuinfo.c', 'source/event_gpio.c', 'source/soft_pwm.c', 'source/py_pwm.c', 'source/common.c', 'source/constants.c', 'source/wiringTB.c'])])
