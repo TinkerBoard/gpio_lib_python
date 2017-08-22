@@ -1,4 +1,4 @@
-#soft pwm
+#Testing for software PWM
 import ASUS.GPIO as GPIO
 import unittest   
 import time   
