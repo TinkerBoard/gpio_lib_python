@@ -45,6 +45,7 @@ modeNameMap = {'phys': 'GPIO.BOARD', 'TB': 'GPIO.ASUS'}
 #Pin Table [End]
 
 def GPIO_IO_TESTING():
+    print('== Testing GPIO INPUT/OUTPUT ==')
     for mode in ['phys', 'TB']:
         GPIO.setmode(modeMap[mode])
         LPin = [pinTable[pins[0] - 1][mode] for pins in pairPins]
@@ -71,5 +72,26 @@ def GPIO_IO_TESTING():
                     exit()
         print("[PASS] GPIO.setmode(%s)" % (modeNameMap[mode]))
         GPIO.cleanup()
+    print('===============================')
+
+def GPIO_PULL_UPDW_TESTING():
+    print('== Testing GPIO PULL_UP_DOWN ==')
+    testPin = [11, 13, 15, 16, 38, 40]
+    print("Check that nothing connects to those pins: %s" % (','.join([str(x) for x in testPin])))
+    GPIO.setmode(GPIO.BOARD)
+    GPIO.setup(testPin , GPIO.IN, pull_up_down=GPIO.PUD_UP)
+    Result = [GPIO.input(pin) == GPIO.HIGH for pin in testPin]
+    if(False in Result):
+        print('Check Pin[%d].' % (testPin[Result.index(False)]))
+        exit()
+    GPIO.setup(testPin , GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+    Result = [GPIO.input(pin) == GPIO.LOW for pin in testPin]
+    if(False in Result):
+        print('Check Pin[%d].' % (testPin[Result.index(False)]))
+        exit()
+    print("[PASS] Pull Up and Down")
+    GPIO.cleanup()
+    print('===============================')
 
 GPIO_IO_TESTING()
+GPIO_PULL_UPDW_TESTING()
