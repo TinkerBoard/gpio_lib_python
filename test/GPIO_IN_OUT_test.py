@@ -70,5 +70,6 @@ def GPIO_IO_TESTING():
                     print('Check Pin[%d].' % (IPin[IResult.index(False)]))
                     exit()
         print("[PASS] GPIO.setmode(%s)" % (modeNameMap[mode]))
+        GPIO.cleanup()
 
 GPIO_IO_TESTING()
