@@ -143,29 +143,7 @@ int gpio_function(int gpio)
 
 void output_gpio(int gpio, int value)
 {
-
-	if(0<gpio&&gpio<=24)
-	{
-		if(value==1)
-		{
-			*(gpio0[gpio/32]+GPIO_SWPORTA_DR_OFFSET/4) |= (1<<(gpio%32));
-		}
-		else
-		{
-			*(gpio0[gpio/32]+GPIO_SWPORTA_DR_OFFSET/4) &= ~(1<<(gpio%32));
-		}
-	}
-	else
-	{
-		if(value==1)
-		{
-			*(gpio0[(gpio+8)/32]+GPIO_SWPORTA_DR_OFFSET/4) |= (1<<((gpio+8)%32));	
-		}
-		else
-		{
-			*(gpio0[(gpio+8)/32]+GPIO_SWPORTA_DR_OFFSET/4) &= ~(1<<((gpio+8)%32));
-		}
-	}
+	asus_digitalWrite(gpio, value);
 }
 
 int input_gpio(int gpio)
@@ -195,7 +173,6 @@ void cleanup(void)
     	munmap((caddr_t)gpio_map0[i], BLOCK_SIZE);
 	}
 	munmap((caddr_t)grf_map, BLOCK_SIZE);
-	printf("cleanup\n");
 }
 
 
