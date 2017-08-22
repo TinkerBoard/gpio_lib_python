@@ -1,3 +1,4 @@
+#soft pwm
 import ASUS.GPIO as GPIO
 import unittest   
 import time   
