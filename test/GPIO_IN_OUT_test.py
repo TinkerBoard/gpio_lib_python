@@ -40,73 +40,35 @@ pairPins = [( 3,  8),
             (33, 36),
             (35, 38),
             (37, 40)]
-modeMap = {'phys': GPIO.BOARD, 'wPi': GPIO.ASUS, 'TB': GPIO.ASUS}
-modeNameMap = {'phys': 'GPIO.BOARD', 'wPi': 'GPIO.BCM', 'TB': 'GPIO.ASUS'}
+modeMap = {'phys': GPIO.BOARD, 'TB': GPIO.ASUS}
+modeNameMap = {'phys': 'GPIO.BOARD', 'TB': 'GPIO.ASUS'}
 #Pin Table [End]
 
-#Testing [Begin]
-for mode in ['phys', 'TB']:
-    GPIO.setmode(modeMap[mode])
-    LPin = [pinTable[pins[0] - 1][mode] for pins in pairPins]
-    RPin = [pinTable[pins[1] - 1][mode] for pins in pairPins]
-    if(-1 in LPin or -1 in RPin):
-        print('Some pins use the 3.3V or GND pin.')
-        exit()
-    #L: INPUT  R: OUTPUT
-    GPIO.setup( LPin, GPIO.IN)
-    GPIO.setup( RPin, GPIO.OUT)
-    print([(pin, GPIO.gpio_function(pin)) for pin in LPin])
-    print([(pin, GPIO.gpio_function(pin)) for pin in RPin])
-    if(False in [GPIO.gpio_function(pin) == GPIO.IN for pin in LPin] or
-       False in [GPIO.gpio_function(pin) == GPIO.OUT for pin in RPin]):
-        print('Check GPIO.gpio_function or GPIO.setup.')
-        exit()
-    #HIGH LEVEL
-    GPIO.output(RPin, GPIO.HIGH)
-    OResult = [GPIO.input(pin) == GPIO.HIGH for pin in RPin]
-    IResult = [GPIO.input(LPin[i]) == GPIO.input(RPin[i]) for i in range(len(LPin))]
-    if(False in OResult):
-        print('Check Pin[%d].' % (RPin[OResult.index(False)]))
-        exit()
-    if(False in IResult):
-        print('Check Pin[%d].' % (LPin[IResult.index(False)]))
-        exit()
-    #LOW LEVEL
-    GPIO.output(RPin, GPIO.LOW)
-    OResult = [GPIO.input(pin) == GPIO.LOW for pin in RPin]
-    IResult = [GPIO.input(LPin[i]) == GPIO.input(RPin[i]) for i in range(len(LPin))]
-    if(False in OResult):
-        print('Check Pin[%d].' % (RPin[OResult.index(False)]))
-        exit()
-    if(False in IResult):
-        print('Check Pin[%d].' % (LPin[IResult.index(False)]))
-        exit()
-    #L: OUTPUT R: INPUT
-    GPIO.setup( LPin, GPIO.OUT)
-    GPIO.setup( RPin, GPIO.IN)
-    if(False in [GPIO.gpio_function(pin) == GPIO.OUT for pin in LPin] or
-       False in [GPIO.gpio_function(pin) == GPIO.IN for pin in RPin]):
-        print('Check GPIO.gpio_function or GPIO.setup.')
-        exit()
-    #HIGH LEVEL
-    GPIO.output(LPin, GPIO.HIGH)
-    OResult = [GPIO.input(pin) == GPIO.HIGH for pin in LPin]
-    IResult = [GPIO.input(LPin[i]) == GPIO.input(RPin[i]) for i in range(len(RPin))]
-    if(False in OResult):
-        print('Check Pin[%d].' % (LPin[OResult.index(False)]))
-        exit()
-    if(False in IResult):
-        print('Check Pin[%d].' % (RPin[IResult.index(False)]))
-        exit()
-    #LOW LEVEL
-    GPIO.output(LPin, GPIO.LOW)
-    OResult = [GPIO.input(pin) == GPIO.LOW for pin in LPin]
-    IResult = [GPIO.input(LPin[i]) == GPIO.input(RPin[i]) for i in range(len(RPin))]
-    if(False in OResult):
-        print('Check Pin[%d].' % (LPin[OResult.index(False)]))
-        exit()
-    if(False in IResult):
-        print('Check Pin[%d].' % (RPin[IResult.index(False)]))
-        exit()
-    print("[PASS] GPIO.setmode(%s)" % (modeNameMap[mode]))
-#Testing [End]
+def GPIO_IO_TESTING():
+    for mode in ['phys', 'TB']:
+        GPIO.setmode(modeMap[mode])
+        LPin = [pinTable[pins[0] - 1][mode] for pins in pairPins]
+        RPin = [pinTable[pins[1] - 1][mode] for pins in pairPins]
+        if(-1 in LPin or -1 in RPin):
+            print('Some pins use the 3.3V or GND pin.')
+            exit()
+        for IPin, OPin in [(LPin, RPin), (RPin, LPin)]:
+            GPIO.setup( IPin, GPIO.IN)
+            GPIO.setup( OPin, GPIO.OUT)
+            if(False in [GPIO.gpio_function(pin) == GPIO.IN for pin in IPin] or
+                False in [GPIO.gpio_function(pin) == GPIO.OUT for pin in OPin]):
+                print('Check GPIO.gpio_function or GPIO.setup.')
+                exit()
+            for volt in [GPIO.HIGH, GPIO.LOW]:
+                GPIO.output(OPin, volt)
+                OResult = [GPIO.input(pin) == volt for pin in OPin]
+                IResult = [GPIO.input(IPin[i]) == GPIO.input(OPin[i]) for i in range(len(IPin))]
+                if(False in OResult):
+                    print('Check Pin[%d].' % (OPin[OResult.index(False)]))
+                    exit()
+                if(False in IResult):
+                    print('Check Pin[%d].' % (IPin[IResult.index(False)]))
+                    exit()
+        print("[PASS] GPIO.setmode(%s)" % (modeNameMap[mode]))
+
+GPIO_IO_TESTING()
