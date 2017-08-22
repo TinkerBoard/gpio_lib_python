@@ -153,12 +153,7 @@ int input_gpio(int gpio)
 
 void cleanup(void)
 {
-	int i;
-	for(i=0;i<GPIO_BANK;i++)
-	{
-    	munmap((caddr_t)gpio_map0[i], BLOCK_SIZE);
-	}
-	munmap((caddr_t)grf_map, BLOCK_SIZE);
+	asus_cleanup();
 }
 
 
