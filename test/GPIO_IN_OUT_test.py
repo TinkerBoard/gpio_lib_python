@@ -41,8 +41,10 @@ pairPins = [( 3,  8),
             (35, 38),
             (37, 40)]
 gpioUsedPins = [3, 5, 7, 8, 10, 11, 12, 13, 15, 16, 18, 19, 21, 22, 23, 24, 26, 27, 28, 29, 31, 32, 33, 35, 36, 37, 38, 40]
+PullUpDnPins = {3: GPIO.PUD_UP, 5: GPIO.PUD_UP, 27: GPIO.PUD_UP, 28: GPIO.PUD_UP}
 modeMap = {'phys': GPIO.BOARD, 'TB': GPIO.ASUS}
 modeNameMap = {'phys': 'GPIO.BOARD', 'TB': 'GPIO.ASUS'}
+InternalPullUpDnValue = {GPIO.PUD_UP: GPIO.HIGH, GPIO.PUD_DOWN: GPIO.LOW}
 #Pin Table [End]
 
 def GPIO_IO_TESTING():
@@ -82,14 +84,12 @@ def GPIO_PULL_UPDW_TESTING():
     print("Check that nothing connects to those pins: %s" % (','.join([str(x) for x in testPin])))
     GPIO.setmode(GPIO.BOARD)
     GPIO.setup(testPin , GPIO.IN, pull_up_down=GPIO.PUD_UP)
-    Result = [GPIO.input(pin) == GPIO.HIGH for pin in testPin]
     for pin in testPin:
-        if (GPIO.input(pin) != GPIO.HIGH):
+        if (GPIO.input(pin) != InternalPullUpDnValue[PullUpDnPins[pin] if pin in PullUpDnPins else GPIO.PUD_UP]):
             checkPins.append(pin)
     GPIO.setup(testPin , GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-    Result = [GPIO.input(pin) == GPIO.LOW for pin in testPin]
     for pin in testPin:
-        if (GPIO.input(pin) != GPIO.LOW):
+        if (GPIO.input(pin) != InternalPullUpDnValue[PullUpDnPins[pin] if pin in PullUpDnPins else GPIO.PUD_DOWN]):
             checkPins.append(pin)
     print("[%s] Pull Up and Down" % ('PASS' if len(checkPins) <= 0 else 'FAILED'))
     if(len(checkPins) > 0 ):
