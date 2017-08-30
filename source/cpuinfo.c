@@ -31,7 +31,7 @@ int get_asuspi_info(asuspi_info *info)
 	char buffer[1024];
 	char hardware[1024];
 	int found = 0;
-
+	char revision[1024];
 	if ((fp = fopen("/proc/cpuinfo", "r")) == NULL)
 		return -1;
 	while(!feof(fp)) 
@@ -42,6 +42,7 @@ int get_asuspi_info(asuspi_info *info)
 		{
 			found = 1;
 		}
+		sscanf(buffer, "Revision	: %s", revision);
 
 	}
 	fclose(fp);
@@ -49,6 +50,7 @@ int get_asuspi_info(asuspi_info *info)
 	if (!found)
 		return -1;
 	info->p1_revision = 3;
+	strcpy(info->revision, revision);
 	info->type = "Tinker Board";
 	info->processor = "ROCKCHIP3288";
 	info->manufacturer = "ASUS";
