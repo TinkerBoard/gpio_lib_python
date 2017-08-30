@@ -58,6 +58,9 @@ void define_constants(PyObject *module)
    board = Py_BuildValue("i", BOARD);
    PyModule_AddObject(module, "BOARD", board);
 
+   bcm = Py_BuildValue("i", BCM);
+   PyModule_AddObject(module, "BCM", bcm);
+   
    rk = Py_BuildValue("i", RK);
    PyModule_AddObject(module, "RK", rk);
 
