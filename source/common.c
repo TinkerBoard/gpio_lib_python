@@ -72,6 +72,14 @@ const int pin_to_gpio_rev[41]={-1,-1,-1,GPIO8_A4,-1,GPIO8_A5,-1,GPIO0_C1,GPIO5_B
 #else
 const int pin_to_gpio_rev[41] = {-1, -1, -1, 2, -1, 3, -1, 4, 14, -1, 15, 17, 18, 27, -1, 22, 23, -1, 24, 10, -1, 9, 25, 11, 8, -1, 7, -1, -1, 5, -1, 6, 12, 13, -1, 19, 16, 26, 20, -1, 21 };//it depend on ee
 #endif
+const int bcm_gpio_to_pin[28]={
+	27,28, 3, 5, 7,	//GPIO0-4
+	29,31,26,24,21, //GPIO5-9
+	19,23,32,33, 8, //GPIO10-14
+	10,36,11,12,35, //GPIO15-19
+	38,40,15,16,18, //GPIO20-24
+	22,37,13		//GPIO25-27
+};
 int setup_error = 0;
 int module_setup = 0;
 
@@ -98,15 +106,16 @@ int get_gpio_number(int channel, unsigned int *gpio)
 {
 	// check setmode() has been run
 
-	if (gpio_mode != BOARD && gpio_mode != RK && gpio_mode != ASUS)
+	if (gpio_mode != BOARD && gpio_mode != RK && gpio_mode != ASUS && gpio_mode != BCM)
 	{
-		PyErr_SetString(PyExc_RuntimeError, "Please set pin numbering mode using GPIO.setmode(GPIO.BOARD) or GPIO.setmode(GPIO.RK)");
+		PyErr_SetString(PyExc_RuntimeError, "Please set pin numbering mode using GPIO.setmode(GPIO.BOARD), GPIO.setmode(GPIO.ASUS), GPIO.setmode(GPIO.BCM) or GPIO.setmode(GPIO.RK)");
 		return 3;
 	}
 
 	// check channel number is in range
 	if ( (gpio_mode == RK && (channel < 0 || channel > 300))
 	|| (gpio_mode == ASUS && (channel < 0 || channel > 300))
+	|| (gpio_mode == BCM && (channel < 0 || channel > 27))
 	|| (gpio_mode == BOARD && (channel < 1 || channel > 40) ) )
 	{
 		PyErr_SetString(PyExc_ValueError, "The channel sent is invalid on a ASUS");
@@ -125,6 +134,10 @@ int get_gpio_number(int channel, unsigned int *gpio)
 		{
 			*gpio = *(*pin_to_gpio+channel);
 		}
+	}
+	else if(gpio_mode == BCM)
+	{
+		*gpio = *(*pin_to_gpio+bcm_gpio_to_pin[channel]);
 	}
 	else // gpio_mode == RK or gpio_mode == ASUS
 	{

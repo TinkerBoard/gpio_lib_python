@@ -618,7 +618,7 @@ static PyObject *py_setmode(PyObject *self, PyObject *args)
 
 	gpio_mode = new_mode;
 
-	if (gpio_mode != BOARD && gpio_mode != RK && gpio_mode != ASUS)
+	if (gpio_mode != BOARD && gpio_mode != RK && gpio_mode != ASUS && gpio_mode != BCM)
 	{
 		PyErr_SetString(PyExc_ValueError, "An invalid mode was passed to setmode()");
 		return NULL;

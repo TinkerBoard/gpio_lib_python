@@ -35,6 +35,7 @@ PyObject *unknown;
 PyObject *board;
 PyObject *rk;
 PyObject *asus;
+PyObject *bcm;
 PyObject *pud_off;
 PyObject *pud_up;
 PyObject *pud_down;
