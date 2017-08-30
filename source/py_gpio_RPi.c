@@ -1003,7 +1003,7 @@ PyMethodDef asuspi_gpio_methods[] = {
 #if PY_MAJOR_VERSION > 2
 static struct PyModuleDef asuspigpiomodule = {
    PyModuleDef_HEAD_INIT,
-   "ASUS.GPIO",       // name of module
+   "RPi.GPIO",       // name of module
    moduledocstring,  // module documentation, may be NULL
    -1,               // size of per-interpreter state of the module, or -1 if the module keeps state in global variables.
    asuspi_gpio_methods
@@ -1023,7 +1023,7 @@ PyMODINIT_FUNC initGPIO(void)
 	if ((module = PyModule_Create(&asuspigpiomodule)) == NULL)
 		return NULL;
 #else
-	if ((module = Py_InitModule3("ASUS.GPIO", asuspi_gpio_methods, moduledocstring)) == NULL)
+	if ((module = Py_InitModule3("RPi.GPIO", asuspi_gpio_methods, moduledocstring)) == NULL)
 		return;
 #endif
 
@@ -1052,14 +1052,14 @@ PyMODINIT_FUNC initGPIO(void)
 	"MANUFACTURER",asuspiinfo.manufacturer,
 	"PROCESSOR",asuspiinfo.processor,
 	"RAM",asuspiinfo.ram);
-	PyModule_AddObject(module, "ASUSPI_INFO", board_info); 
+	PyModule_AddObject(module, "RPI_INFO", board_info); 
 
 
 	pin_to_gpio = &pin_to_gpio_rev;
 
 
 	asuspi_revision = Py_BuildValue("i", asuspiinfo.p1_revision);     // deprecated
-	PyModule_AddObject(module, "ASUSPI_REVISION", asuspi_revision);   // deprecated
+	PyModule_AddObject(module, "RPI_REVISION", asuspi_revision);   // deprecated
 
 	// Add PWM class
 	if (PWM_init_PWMType() == NULL)
