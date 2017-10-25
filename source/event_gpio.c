@@ -66,7 +66,7 @@ int epfd_blocking = -1;
 int gpio_export(unsigned int gpio)
 {
     int fd, len;
-    char str_gpio[3];
+    char str_gpio[4];
     if ((fd = open("/sys/class/gpio/export", O_WRONLY)) < 0)
        return -1;
 
@@ -80,7 +80,7 @@ int gpio_export(unsigned int gpio)
 int gpio_unexport(unsigned int gpio)
 {
     int fd, len;
-    char str_gpio[3];
+    char str_gpio[4];
 
     if ((fd = open("/sys/class/gpio/unexport", O_WRONLY)) < 0)
         return -1;
