@@ -67,46 +67,34 @@ int epfd_blocking = -1;
 int gpio_export(unsigned int gpio)
 {
     int fd, len;
-    char* str_gpio;
-	int gpio_len;
+    char str_gpio[10]; //max value of unsigned int = 2^32-1(4294967295,4 * (1024)^3, 4*10^9), max length=10
     if ((fd = open("/sys/class/gpio/export", O_WRONLY)) < 0)
         return -1;
-	gpio_len = ((int)ceil(log10(gpio))) + 1; // gpio + '\0'
-	str_gpio = malloc(sizeof(char) * gpio_len);
     len = snprintf(str_gpio, sizeof(str_gpio), "%d", gpio);
     if(write(fd, str_gpio, len + 1) != -1);
 	    close(fd);
-	free(str_gpio);
     return 0;
 }
 
 int gpio_unexport(unsigned int gpio)
 {
     int fd, len;
-    char* str_gpio;
-	int gpio_len;
+    char str_gpio[10]; //max value of unsigned int = 2^32-1(4294967295,4 * (1024)^3, 4*10^9), max length=10
     if ((fd = open("/sys/class/gpio/unexport", O_WRONLY)) < 0)
         return -1;
-	gpio_len = ((int)ceil(log10(gpio))) + 1; // gpio + '\0'
-	str_gpio = malloc(sizeof(char) * gpio_len);
     len = snprintf(str_gpio, sizeof(str_gpio), "%d", gpio);
     if(write(fd, str_gpio, len + 1) != -1);
         close(fd);
-	free(str_gpio);
     return 0;
 }
 
 int gpio_set_direction(unsigned int gpio, unsigned int in_flag)
 {
     int fd;
-    char* filename;
-	int str_len;
-	str_len = strlen("/sys/class/gpio/gpio/direction") + ((int)ceil(log10(gpio))) + 1; // "/sys/class/gpio/gpio%d/direction" + gpio + '\0'
-	filename = malloc(sizeof(char) * str_len);
+    char filename[45]; //command length=30 gpio max length=10 '\0' length=1 flexible length=10%(4)
     snprintf(filename, sizeof(filename), "/sys/class/gpio/gpio%d/direction", gpio);
 
     if ((fd = open(filename, O_WRONLY)) < 0) {
-		free(filename);
         return -1;
     }
     if (in_flag)
@@ -118,47 +106,35 @@ int gpio_set_direction(unsigned int gpio, unsigned int in_flag)
         if (write(fd, "out", 4) != -1);
 	}
     close(fd);
-	free(filename);
     return 0;
 }
 
 int gpio_set_edge(unsigned int gpio, unsigned int edge)
 {
     int fd;
-	char* filename;
-	int str_len;
-	str_len = strlen("/sys/class/gpio/gpio/edge") + ((int)ceil(log10(gpio))) + 1; // "/sys/class/gpio/gpio%d/edge" + gpio + '\0'
-	filename = malloc(sizeof(char) * str_len);
-	
+	char filename[40]; //command length=25 gpio max length=10 '\0' length=1 flexible length=10%(4)
     snprintf(filename, sizeof(filename), "/sys/class/gpio/gpio%d/edge", gpio);
 
     if ((fd = open(filename, O_WRONLY)) < 0) {
-		free(filename);
         return -1;
 	}
 
     if(write(fd, stredge[edge], strlen(stredge[edge]) + 1) != -1);
 		close(fd);
-	free(filename);
     return 0;
 }
 
 int open_value_file(unsigned int gpio)
 {
     int fd;
-    char* filename;
-	int str_len;
-	str_len = strlen("/sys/class/gpio/gpio/value") + ((int)ceil(log10(gpio))) + 1; // "/sys/class/gpio/gpio%d/value" + gpio + '\0'
-	filename = malloc(sizeof(char) * str_len);
+    char filename[41]; //command length=26 gpio max length=10 '\0' length=1 flexible length=10%(4)
 
     // create file descriptor of value file
     snprintf(filename, sizeof(filename), "/sys/class/gpio/gpio%d/value", gpio);
 
     if ((fd = open(filename, O_RDONLY | O_NONBLOCK)) < 0) {
-		free(filename);
         return -1;
 	}
-	free(filename);
     return fd;
 }
 
