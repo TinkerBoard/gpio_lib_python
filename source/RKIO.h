@@ -22,6 +22,8 @@
 #define GPIOOUT		 54
 #define CLKOUT		 55
 #define CLK1_27M	 56
+#define VOP0_PWM	 57
+#define VOP1_PWM	 58
 
 
 #define GPIO0_C1		17			//7----->17
@@ -39,27 +41,28 @@
 #define GPIO5_C2		(18+152)	//18----->170
 #define GPIO5_C3		(19+152)	//19----->171
 
-#define GPIO6_A0		(184)		//7----->184
-#define GPIO6_A1		(1+184)		//7----->185
-#define GPIO6_A3		(3+184)		//7----->187
-#define GPIO6_A4		(4+184)		//7----->188
+#define GPIO6_A0		(184)		//0----->184
+#define GPIO6_A1		(1+184)		//1----->185
+#define GPIO6_A3		(3+184)		//3----->187
+#define GPIO6_A4		(4+184)		//4----->188
 
+#define GPIO7_A0		(0+216)		//0----->216
 #define GPIO7_A7		(7+216)		//7----->223
-#define GPIO7_B0		(8+216)		//7----->224
-#define GPIO7_B1		(9+216)		//7----->225
-#define GPIO7_B2		(10+216)	//7----->226
-#define GPIO7_C1		(17+216)	//7----->233
-#define GPIO7_C2		(18+216)	//7----->234
-#define GPIO7_C6		(22+216)	//7----->238
-#define GPIO7_C7		(23+216)	//7----->239
+#define GPIO7_B0		(8+216)		//8----->224
+#define GPIO7_B1		(9+216)		//9----->225
+#define GPIO7_B2		(10+216)	//10----->226
+#define GPIO7_C1		(17+216)	//17----->233
+#define GPIO7_C2		(18+216)	//18----->234
+#define GPIO7_C6		(22+216)	//22----->238
+#define GPIO7_C7		(23+216)	//23----->239
 
-#define GPIO8_A3		(3+248)		//7----->251
-#define GPIO8_A4		(4+248)		//3----->252
+#define GPIO8_A3		(3+248)		//3----->251
+#define GPIO8_A4		(4+248)		//4----->252
 #define	GPIO8_A5		(5+248)		//5----->253
-#define GPIO8_A6		(6+248)		//7----->254
+#define GPIO8_A6		(6+248)		//6----->254
 #define GPIO8_A7		(7+248)		//7----->255
-#define GPIO8_B0		(8+248)		//7----->256
-#define GPIO8_B1		(9+248)		//7----->257
+#define GPIO8_B0		(8+248)		//8----->256
+#define GPIO8_B1		(9+248)		//9----->257
 
 #define RK3288_PMU		0xff730000
 #define PMU_GPIO0C_IOMUX	0x008c
@@ -94,6 +97,30 @@
 #define GRF_GPIO7C_P	0x01a8
 #define GRF_GPIO8A_P	0x01b0
 #define GRF_GPIO8B_P	0x01b4
+
+/* Drive Strength */
+#define GRF_GPIO1D_E	0x01cc
+#define GRF_GPIO2A_E	0x01d0
+#define GRF_GPIO2B_E	0x01d4
+#define GRF_GPIO2C_E	0x01d8
+#define GRF_GPIO3A_E	0x01e0
+#define GRF_GPIO3B_E	0x01e4
+#define GRF_GPIO3C_E	0x01e8
+#define GRF_GPIO3D_E	0x01ec
+#define GRF_GPIO4A_E	0x01f0
+#define GRF_GPIO4B_E	0x01f4
+#define GRF_GPIO4C_E	0x01f8
+#define GRF_GPIO4D_E	0x01fc
+#define GRF_GPIO5B_E	0x0204
+#define GRF_GPIO5C_E	0x0208
+#define GRF_GPIO6A_E	0x0210
+#define GRF_GPIO6B_E	0x0214
+#define GRF_GPIO6C_E	0x0218
+#define GRF_GPIO7A_E	0x0220
+#define GRF_GPIO7B_E	0x0224
+#define GRF_GPIO7C_E	0x0228
+#define GRF_GPIO8A_E	0x0230
+#define GRF_GPIO8B_E	0x0234
 
 
 #define RK3288_PWM 			0xff680000
@@ -134,6 +161,7 @@
 #define CRU_CLKGATE17_CON			0x01a4
 //#define PWM0 26
 //#define PWM1 27
+#define PWM0 GPIO7_A0
 #define PWM2 GPIO7_C6
 #define PWM3 GPIO7_C7
 
