@@ -71,8 +71,12 @@ int gpio_export(unsigned int gpio)
     if ((fd = open("/sys/class/gpio/export", O_WRONLY)) < 0)
         return -1;
     len = snprintf(str_gpio, sizeof(str_gpio), "%d", gpio);
-    if(write(fd, str_gpio, len + 1) != -1);
-	    close(fd);
+    if(write(fd, str_gpio, len + 1) != -1)
+	{
+		close(fd);
+		return -1;
+	}
+	close(fd);
     return 0;
 }
 
@@ -83,8 +87,12 @@ int gpio_unexport(unsigned int gpio)
     if ((fd = open("/sys/class/gpio/unexport", O_WRONLY)) < 0)
         return -1;
     len = snprintf(str_gpio, sizeof(str_gpio), "%d", gpio);
-    if(write(fd, str_gpio, len + 1) != -1);
-        close(fd);
+    if(write(fd, str_gpio, len + 1) != -1)
+	{
+		close(fd);
+		return -1;
+	}
+    close(fd);
     return 0;
 }
 
@@ -94,16 +102,25 @@ int gpio_set_direction(unsigned int gpio, unsigned int in_flag)
     char filename[45]; //command length=30 gpio max length=10 '\0' length=1 flexible length=10%(4)
     snprintf(filename, sizeof(filename), "/sys/class/gpio/gpio%d/direction", gpio);
 
-    if ((fd = open(filename, O_WRONLY)) < 0) {
+    if ((fd = open(filename, O_WRONLY)) < 0) 
+	{
         return -1;
     }
     if (in_flag)
 	{
-        if (write(fd, "in", 3) != -1);
+        if (write(fd, "in", 3) != -1)
+		{
+			close(fd);
+			return -1;
+		}
 	}
     else
 	{
-        if (write(fd, "out", 4) != -1);
+        if (write(fd, "out", 4) != -1)
+		{
+			close(fd);
+			return -1;
+		}
 	}
     close(fd);
     return 0;
@@ -115,12 +132,17 @@ int gpio_set_edge(unsigned int gpio, unsigned int edge)
 	char filename[40]; //command length=25 gpio max length=10 '\0' length=1 flexible length=10%(4)
     snprintf(filename, sizeof(filename), "/sys/class/gpio/gpio%d/edge", gpio);
 
-    if ((fd = open(filename, O_WRONLY)) < 0) {
+    if ((fd = open(filename, O_WRONLY)) < 0) 
+	{
         return -1;
 	}
 
-    if(write(fd, stredge[edge], strlen(stredge[edge]) + 1) != -1);
+    if(write(fd, stredge[edge], strlen(stredge[edge]) + 1) != -1)
+	{
 		close(fd);
+		return -1;
+	}
+	close(fd);
     return 0;
 }
 
@@ -132,7 +154,8 @@ int open_value_file(unsigned int gpio)
     // create file descriptor of value file
     snprintf(filename, sizeof(filename), "/sys/class/gpio/gpio%d/value", gpio);
 
-    if ((fd = open(filename, O_RDONLY | O_NONBLOCK)) < 0) {
+    if ((fd = open(filename, O_RDONLY | O_NONBLOCK)) < 0) 
+	{
         return -1;
 	}
     return fd;
