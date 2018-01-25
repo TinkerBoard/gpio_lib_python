@@ -299,7 +299,7 @@ static PyObject *py_setup_channel(PyObject *self, PyObject *args, PyObject *kwar
 	if (mmap_gpio_mem())
 		return NULL;
 
-	if (direction != INPUT && direction != OUTPUT) 
+	if (direction != INPUT && direction != OUTPUT && direction != PWM_OUTPUT) 
 	{
 		PyErr_SetString(PyExc_ValueError, "An invalid direction was passed to setup()");
 		return 0;

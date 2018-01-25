@@ -32,6 +32,12 @@ void set_low_event(int gpio, int enable);
 int eventdetected(int gpio);
 void cleanup(void);
 
+/* tinkerboard */
+void hard_pwmWrite(int gpio, int value);
+void hard_pwmToneWrite(int gpio, int freq);
+void hard_pwm_set_Frequency(int gpio, int divisor);
+void hard_pwm_set_Period(int gpio, unsigned int period);
+
 #define SETUP_OK          0
 #define SETUP_DEVMEM_FAIL 1
 #define SETUP_MALLOC_FAIL 2

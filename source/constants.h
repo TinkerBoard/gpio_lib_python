@@ -27,6 +27,7 @@ PyObject *high;
 PyObject *low;
 PyObject *input;
 PyObject *output;
+PyObject *pwm_output;
 PyObject *pwm;
 PyObject *serial;
 PyObject *i2c;

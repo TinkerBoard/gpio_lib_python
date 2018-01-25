@@ -79,5 +79,22 @@ void cleanup(void)
 	asus_cleanup();
 }
 
+/* tinkerboard function*/
 
+void hard_pwmWrite(int gpio, int value)
+{
+	asus_pwm_write(gpio, value);
+}
+void hard_pwmToneWrite(int gpio, int freq)
+{
+	asus_pwmToneWrite(gpio, freq);
+}
+void hard_pwm_set_Frequency(int gpio, int divisor)
+{
+	asus_set_pwmFrequency(gpio, divisor);
+}
+void hard_pwm_set_Period(int gpio, unsigned int period)
+{
+	asus_set_pwmPeriod(gpio, period);
+}
 

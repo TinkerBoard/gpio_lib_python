@@ -40,6 +40,9 @@ void define_constants(PyObject *module)
    input = Py_BuildValue("i", INPUT);
    PyModule_AddObject(module, "IN", input);
 
+   pwm_output = Py_BuildValue("i", PWM_OUTPUT);
+   PyModule_AddObject(module, "PWM_OUTPUT", pwm_output);
+
    pwm = Py_BuildValue("i", PWM);
    PyModule_AddObject(module, "HARD_PWM", pwm);
 

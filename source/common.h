@@ -25,7 +25,7 @@ SOFTWARE.
 #define MODE_UNKNOWN -1
 #define BOARD        10
 #define BCM          11
-#define RK	     12
+#define RK	    	 12
 #define ASUS         13
 
 #define SERIAL       40
@@ -43,7 +43,10 @@ SOFTWARE.
 #define SC_XXX		 52
 #define GPIOIN		 53
 #define GPIOOUT		 54
-
+#define CLKOUT		 55
+#define CLK1_27M	 56
+#define VOP0_PWM	 57
+#define VOP1_PWM	 58
 
 
 
