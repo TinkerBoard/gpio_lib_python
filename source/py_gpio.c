@@ -238,12 +238,12 @@ static PyObject *py_setup_channel(PyObject *self, PyObject *args, PyObject *kwar
 		((func != GPIO) ||                 // (already one of the alt functions or
 		(gpio_direction[gpio] == -1)))  // already an output not set from this program)
 		{
-			printf("This channel is already in use, continuing anyway.  Use GPIO.setwarnings(False) to disable warnings.");
+			printf("This channel is already in use, continuing anyway.  Use GPIO.setwarnings(False) to disable warnings.\n");
 		}
 
 		if (direction == OUTPUT && (initial == LOW || initial == HIGH))
 		{
-			printf("direction == OUTPUT");
+			printf("direction == OUTPUT\n");
 			output_gpio(gpio, initial);
 		}
 		
@@ -252,6 +252,13 @@ static PyObject *py_setup_channel(PyObject *self, PyObject *args, PyObject *kwar
 		{
 			PyErr_SetString(PyExc_RuntimeError, "This gpio is set to other function!");
 			return (int)NULL;
+		}
+		
+		if (direction == PWM_OUTPUT)
+		{
+			printf("direction == PWM_OUTPUT\n");
+			hard_pwm_set_Frequency(gpio, 124);
+			hard_pwm_set_Period(gpio, 1024);
 		}
 		gpio_direction[gpio] = direction;
 		return 1;
@@ -981,6 +988,196 @@ static PyObject *py_setwarnings(PyObject *self, PyObject *args)
    Py_RETURN_NONE;
 }
 
+// python function pwmWrite(channel(s), dutycycle(s))
+static PyObject *py_pwmWrite(PyObject *self, PyObject *args)
+{
+	unsigned int gpio;
+	int channel = -1;
+	int value = -1;
+	int i;
+	PyObject *chanlist = NULL;
+	PyObject *valuelist = NULL;
+	PyObject *chantuple = NULL;
+	PyObject *valuetuple = NULL;
+	PyObject *tempobj = NULL;
+	int chancount = -1;
+	int valuecount = -1;
+
+	int pwmWrite(void) 
+	{
+		if (get_gpio_number(channel, &gpio))
+		return 0;
+
+		if (gpio_direction[gpio] != PWM_OUTPUT)
+		{
+			PyErr_SetString(PyExc_RuntimeError, "The GPIO channel has not been set up as an PWM_OUTPUT");
+			return 0;
+		}
+
+		if (check_gpio_priv())
+			return 0;
+		hard_pwmWrite(gpio, value);
+		return 1;
+	}
+
+	if (!PyArg_ParseTuple(args, "OO", &chanlist, &valuelist))
+		return NULL;
+
+#if PY_MAJOR_VERSION >= 3
+	if (PyLong_Check(chanlist))
+	{
+		channel = (int)PyLong_AsLong(chanlist);
+#else
+	if (PyInt_Check(chanlist))
+	{
+		channel = (int)PyInt_AsLong(chanlist);
+#endif
+		if (PyErr_Occurred())
+			return NULL;
+		chanlist = NULL;
+	} 
+	else if (PyList_Check(chanlist))
+	{
+		// do nothing
+	} 
+	else if (PyTuple_Check(chanlist))
+	{
+		chantuple = chanlist;
+		chanlist = NULL;
+	}
+	else
+	{
+		PyErr_SetString(PyExc_ValueError, "Channel must be an integer or list/tuple of integers");
+		return NULL;
+	}
+
+#if PY_MAJOR_VERSION >= 3
+	if (PyLong_Check(valuelist))
+	{
+		value = (int)PyLong_AsLong(valuelist);
+#else
+	if (PyInt_Check(valuelist))
+	{
+		value = (int)PyInt_AsLong(valuelist);
+#endif
+		if (PyErr_Occurred())
+		return NULL;
+		valuelist = NULL;
+	} 
+	else if (PyList_Check(valuelist))
+	{
+		// do nothing
+	} 
+	else if (PyTuple_Check(valuelist))
+	{
+		valuetuple = valuelist;
+		valuelist = NULL;
+	}
+	else
+	{
+		PyErr_SetString(PyExc_ValueError, "Value must be an integer/boolean or a list/tuple of integers/booleans");
+		return NULL;
+	}
+
+	if (chanlist)
+		chancount = PyList_Size(chanlist);
+	if (chantuple)
+		chancount = PyTuple_Size(chantuple);
+	if (valuelist)
+		valuecount = PyList_Size(valuelist);
+	if (valuetuple)
+		valuecount = PyTuple_Size(valuetuple);
+	if ((chancount != -1 && chancount != valuecount && valuecount != -1) || (chancount == -1 && valuecount != -1))
+	{
+		PyErr_SetString(PyExc_RuntimeError, "Number of channels != number of values");
+		return NULL;
+	}
+
+	if (chancount == -1)
+	{
+		if (!pwmWrite())
+			return NULL;
+		Py_RETURN_NONE;
+	}
+
+	for (i=0; i<chancount; i++) 
+	{
+		// get channel number
+		if (chanlist)
+		{
+			if ((tempobj = PyList_GetItem(chanlist, i)) == NULL)
+			{
+				return NULL;
+			}
+		}
+		else
+		{ // assume chantuple
+			if ((tempobj = PyTuple_GetItem(chantuple, i)) == NULL)
+			{
+				return NULL;
+			}
+		}
+
+#if PY_MAJOR_VERSION >= 3
+		if (PyLong_Check(tempobj)) 
+		{
+			channel = (int)PyLong_AsLong(tempobj);
+#else
+			if (PyInt_Check(tempobj))
+			{
+				channel = (int)PyInt_AsLong(tempobj);
+#endif
+				if (PyErr_Occurred())
+					return NULL;
+			} 
+			else 
+			{
+				PyErr_SetString(PyExc_ValueError, "Channel must be an integer");
+				return NULL;
+			}
+
+			// get value
+			if (valuecount > 0)
+			{
+				if (valuelist)
+				{
+					if ((tempobj = PyList_GetItem(valuelist, i)) == NULL)
+					{
+					return NULL;
+					}
+				} 
+				else 
+				{ // assume valuetuple
+					if ((tempobj = PyTuple_GetItem(valuetuple, i)) == NULL)
+					{
+						return NULL;
+					}
+				}
+#if PY_MAJOR_VERSION >= 3
+				if (PyLong_Check(tempobj))
+				{
+					value = (int)PyLong_AsLong(tempobj);
+#else
+				if (PyInt_Check(tempobj)) 
+				{
+					value = (int)PyInt_AsLong(tempobj);
+#endif
+					if (PyErr_Occurred())
+						return NULL;
+				} 
+				else 
+				{
+					PyErr_SetString(PyExc_ValueError, "Value must be an integer or boolean");
+					return NULL;
+				}
+			}
+			if (!pwmWrite())
+				return NULL;
+		}
+
+	Py_RETURN_NONE;
+}
+
 static const char moduledocstring[] = "GPIO functionality of a ASUS Pi using Python";
 
 PyMethodDef asuspi_gpio_methods[] = {
@@ -997,6 +1194,7 @@ PyMethodDef asuspi_gpio_methods[] = {
    {"wait_for_edge", (PyCFunction)py_wait_for_edge, METH_VARARGS | METH_KEYWORDS, "Wait for an edge.\nchannel      - either board pin number ,RK number or ASUS number depending on which mode is set.\nedge         - RISING, FALLING or BOTH\n[bouncetime] - time allowed between calls to allow for switchbounce"},
    {"gpio_function", py_gpio_function, METH_VARARGS, "Return the current GPIO function (IN, OUT, PWM, SERIAL, I2C, SPI)\nchannel - either board pin number ,RK number or ASUS number depending on which mode is set."},
    {"setwarnings", py_setwarnings, METH_VARARGS, "Enable or disable warning messages"},
+   {"pwmWrite", py_pwmWrite, METH_VARARGS, "Writes the value to the PWM register for the given GPIO"},
    {NULL, NULL, 0, NULL}
 };
 
