@@ -1938,6 +1938,28 @@ static PyObject *py_setGpioDrive(PyObject *self, PyObject *args)
 	Py_RETURN_NONE;
 }
 
+// python function value = getGpioDrive(channel)
+static PyObject *py_getGpioDrive(PyObject *self, PyObject *args)
+{
+	unsigned int gpio;
+	int channel;
+	int t;
+	PyObject *drv_t;
+
+	if (!PyArg_ParseTuple(args, "i", &channel))
+		return NULL;
+
+	if (get_gpio_number(channel, &gpio))
+		return NULL;
+
+	if (mmap_gpio_mem())
+		return NULL;
+
+	t = gpio_get_drive(gpio);
+	drv_t = Py_BuildValue("i", t);
+	return drv_t;
+}
+
 static const char moduledocstring[] = "GPIO functionality of a ASUS Pi using Python";
 
 PyMethodDef asuspi_gpio_methods[] = {
@@ -1958,7 +1980,8 @@ PyMethodDef asuspi_gpio_methods[] = {
    {"pwmToneWrite", py_pwmToneWrite, METH_VARARGS, "Creates a square wave with given frequency for the given GPIO"},
    {"pwmSetFrequency", py_pwmSetFrequency, METH_VARARGS, "Set up the frequency of PWM clock source."},
    {"pwmSetPeriod", py_pwmSetPeriod, METH_VARARGS, "Writes the period to the PWM register for the given GPIO."},
-   {"setGpioDrive", py_setGpioDrive, METH_VARARGS, "Set up the drive strength for the given GPIO."},
+   //{"setGpioDrive", py_setGpioDrive, METH_VARARGS, "Set up the drive strength for the given GPIO."},
+   //{"getGpioDrive", py_getGpioDrive, METH_VARARGS, "Return the current drive strength."},
    {NULL, NULL, 0, NULL}
 };
 
@@ -2035,8 +2058,7 @@ PyMODINIT_FUNC initGPIO(void)
 	if (!PyEval_ThreadsInitialized())
 		PyEval_InitThreads();
 	// register exit functions - last declared is called first
-	//Exit ==> Segmentation fault
-	/*if (Py_AtExit(cleanup) != 0)
+	if (Py_AtExit(cleanup) != 0)
 	{
 		printf("exit 1\n");
 		setup_error = 1;
@@ -2065,5 +2087,5 @@ PyMODINIT_FUNC initGPIO(void)
 	return module;
 #else
 	return;
-#endif*/
+#endif
 }
