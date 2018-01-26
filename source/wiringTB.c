@@ -1264,7 +1264,7 @@ void asus_set_GpioDriveStrength(int pin, int drv_type)
 	if(GRF_GPIO_E == -1)
 		return;
 	write_bit = (bank_pin % 8) << 1;
-	*(grf+GRF_GPIO_E/4) = ((*(grf+GRF_GPIO_E/4) | (0x3 << (16 + write_bit))) & ~(0x3 << write_bit)) | (drv_type & 0x3);
+	*(grf+GRF_GPIO_E/4) = ((*(grf+GRF_GPIO_E/4) | (0x3 << (16 + write_bit))) & ~(0x3 << write_bit)) | ((drv_type & 0x3) << write_bit);
 }
 
 int asus_get_GpioDriveStrength(int pin)

@@ -20,23 +20,25 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-int setup(void);
-int setup_gpio(int gpio, int direction, int pud);
-int gpio_function(int gpio);
-void output_gpio(int gpio, int value);
-int input_gpio(int gpio);
-void set_rising_event(int gpio, int enable);
-void set_falling_event(int gpio, int enable);
-void set_high_event(int gpio, int enable);
-void set_low_event(int gpio, int enable);
-int eventdetected(int gpio);
-void cleanup(void);
+int  setup					(void);
+int  setup_gpio				(int gpio, int direction, int pud);
+int  gpio_function			(int gpio);
+void output_gpio			(int gpio, int value);
+int  input_gpio				(int gpio);
+void set_rising_event		(int gpio, int enable);
+void set_falling_event		(int gpio, int enable);
+void set_high_event			(int gpio, int enable);
+void set_low_event			(int gpio, int enable);
+int  eventdetected			(int gpio);
+void cleanup				(void);
 
 /* tinkerboard */
-void hard_pwmWrite(int gpio, int value);
-void hard_pwmToneWrite(int gpio, int freq);
-void hard_pwm_set_Frequency(int gpio, int divisor);
-void hard_pwm_set_Period(int gpio, unsigned int period);
+void hard_pwmWrite			(int gpio, int value);
+void hard_pwmToneWrite		(int gpio, int freq);
+void hard_pwm_set_Frequency	(int gpio, int divisor);
+void hard_pwm_set_Period	(int gpio, unsigned int period);
+void gpio_set_drive			(int gpio, int drv_type);
+int  gpio_get_drive			(int gpio);
 
 #define SETUP_OK          0
 #define SETUP_DEVMEM_FAIL 1
@@ -60,5 +62,11 @@ void hard_pwm_set_Period(int gpio, unsigned int period);
 #define	PUD_OFF			 0
 #define	PUD_DOWN		 1
 #define	PUD_UP			 2
+
+// Drive Strength 2mA, 4mA, 8mA, 12mA
+#define	E_2MA			0
+#define	E_4MA		 	1
+#define	E_8MA			2
+#define	E_12MA			3
 
 #define RK3288

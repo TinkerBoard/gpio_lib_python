@@ -44,5 +44,9 @@ PyObject *rising_edge;
 PyObject *falling_edge;
 PyObject *both_edge;
 PyObject *version;
+PyObject *drv_2ma;
+PyObject *drv_4ma;
+PyObject *drv_8ma;
+PyObject *drv_12ma;
 
 void define_constants(PyObject *module);

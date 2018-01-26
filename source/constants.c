@@ -90,4 +90,16 @@ void define_constants(PyObject *module)
 
    version = Py_BuildValue("s", "0.1");
    PyModule_AddObject(module, "VERSION", version);
+   
+   drv_2ma = Py_BuildValue("i", E_2MA);
+   PyModule_AddObject(module, "E_2MA", drv_2ma);
+   
+   drv_4ma = Py_BuildValue("i", E_4MA);
+   PyModule_AddObject(module, "E_4MA", drv_4ma);
+   
+   drv_8ma = Py_BuildValue("i", E_8MA);
+   PyModule_AddObject(module, "E_8MA", drv_8ma);
+   
+   drv_12ma = Py_BuildValue("i", E_12MA);
+   PyModule_AddObject(module, "E_12MA", drv_12ma);
 }

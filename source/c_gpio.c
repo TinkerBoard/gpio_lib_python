@@ -98,3 +98,12 @@ void hard_pwm_set_Period(int gpio, unsigned int period)
 	asus_set_pwmPeriod(gpio, period);
 }
 
+void gpio_set_drive(int gpio, int drv_type)
+{
+	asus_set_GpioDriveStrength(gpio, drv_type);
+
+}
+int  gpio_get_drive(int gpio)
+{
+	return asus_get_GpioDriveStrength(gpio);
+}

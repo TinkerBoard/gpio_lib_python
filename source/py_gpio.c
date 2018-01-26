@@ -1748,6 +1748,196 @@ static PyObject *py_pwmSetPeriod(PyObject *self, PyObject *args)
 	Py_RETURN_NONE;
 }
 
+// python function setGpioDrive(channel(s), drv_type(s))
+static PyObject *py_setGpioDrive(PyObject *self, PyObject *args)
+{
+	unsigned int gpio;
+	int channel = -1;
+	int value = -1;
+	int i;
+	PyObject *chanlist = NULL;
+	PyObject *valuelist = NULL;
+	PyObject *chantuple = NULL;
+	PyObject *valuetuple = NULL;
+	PyObject *tempobj = NULL;
+	int chancount = -1;
+	int valuecount = -1;
+
+	int setGpioDrive(void) 
+	{
+		if (get_gpio_number(channel, &gpio))
+		return 0;
+
+		if (gpio_direction[gpio] != OUTPUT)
+		{
+			PyErr_SetString(PyExc_RuntimeError, "The GPIO channel has not been set up as an OUTPUT");
+			return 0;
+		}
+
+		if (check_gpio_priv())
+			return 0;
+		gpio_set_drive(gpio, value);
+		return 1;
+	}
+
+	if (!PyArg_ParseTuple(args, "OO", &chanlist, &valuelist))
+		return NULL;
+
+#if PY_MAJOR_VERSION >= 3
+	if (PyLong_Check(chanlist))
+	{
+		channel = (int)PyLong_AsLong(chanlist);
+#else
+	if (PyInt_Check(chanlist))
+	{
+		channel = (int)PyInt_AsLong(chanlist);
+#endif
+		if (PyErr_Occurred())
+			return NULL;
+		chanlist = NULL;
+	} 
+	else if (PyList_Check(chanlist))
+	{
+		// do nothing
+	} 
+	else if (PyTuple_Check(chanlist))
+	{
+		chantuple = chanlist;
+		chanlist = NULL;
+	}
+	else
+	{
+		PyErr_SetString(PyExc_ValueError, "Channel must be an integer or list/tuple of integers");
+		return NULL;
+	}
+
+#if PY_MAJOR_VERSION >= 3
+	if (PyLong_Check(valuelist))
+	{
+		value = (int)PyLong_AsLong(valuelist);
+#else
+	if (PyInt_Check(valuelist))
+	{
+		value = (int)PyInt_AsLong(valuelist);
+#endif
+		if (PyErr_Occurred())
+		return NULL;
+		valuelist = NULL;
+	} 
+	else if (PyList_Check(valuelist))
+	{
+		// do nothing
+	} 
+	else if (PyTuple_Check(valuelist))
+	{
+		valuetuple = valuelist;
+		valuelist = NULL;
+	}
+	else
+	{
+		PyErr_SetString(PyExc_ValueError, "Value must be an integer/boolean or a list/tuple of integers/booleans");
+		return NULL;
+	}
+
+	if (chanlist)
+		chancount = PyList_Size(chanlist);
+	if (chantuple)
+		chancount = PyTuple_Size(chantuple);
+	if (valuelist)
+		valuecount = PyList_Size(valuelist);
+	if (valuetuple)
+		valuecount = PyTuple_Size(valuetuple);
+	if ((chancount != -1 && chancount != valuecount && valuecount != -1) || (chancount == -1 && valuecount != -1))
+	{
+		PyErr_SetString(PyExc_RuntimeError, "Number of channels != number of values");
+		return NULL;
+	}
+
+	if (chancount == -1)
+	{
+		if (!setGpioDrive())
+			return NULL;
+		Py_RETURN_NONE;
+	}
+
+	for (i=0; i<chancount; i++) 
+	{
+		// get channel number
+		if (chanlist)
+		{
+			if ((tempobj = PyList_GetItem(chanlist, i)) == NULL)
+			{
+				return NULL;
+			}
+		}
+		else
+		{ // assume chantuple
+			if ((tempobj = PyTuple_GetItem(chantuple, i)) == NULL)
+			{
+				return NULL;
+			}
+		}
+
+#if PY_MAJOR_VERSION >= 3
+		if (PyLong_Check(tempobj)) 
+		{
+			channel = (int)PyLong_AsLong(tempobj);
+#else
+			if (PyInt_Check(tempobj))
+			{
+				channel = (int)PyInt_AsLong(tempobj);
+#endif
+				if (PyErr_Occurred())
+					return NULL;
+			} 
+			else 
+			{
+				PyErr_SetString(PyExc_ValueError, "Channel must be an integer");
+				return NULL;
+			}
+
+			// get value
+			if (valuecount > 0)
+			{
+				if (valuelist)
+				{
+					if ((tempobj = PyList_GetItem(valuelist, i)) == NULL)
+					{
+					return NULL;
+					}
+				} 
+				else 
+				{ // assume valuetuple
+					if ((tempobj = PyTuple_GetItem(valuetuple, i)) == NULL)
+					{
+						return NULL;
+					}
+				}
+#if PY_MAJOR_VERSION >= 3
+				if (PyLong_Check(tempobj))
+				{
+					value = (int)PyLong_AsLong(tempobj);
+#else
+				if (PyInt_Check(tempobj)) 
+				{
+					value = (int)PyInt_AsLong(tempobj);
+#endif
+					if (PyErr_Occurred())
+						return NULL;
+				} 
+				else 
+				{
+					PyErr_SetString(PyExc_ValueError, "Value must be an integer or boolean");
+					return NULL;
+				}
+			}
+			if (!setGpioDrive())
+				return NULL;
+		}
+
+	Py_RETURN_NONE;
+}
+
 static const char moduledocstring[] = "GPIO functionality of a ASUS Pi using Python";
 
 PyMethodDef asuspi_gpio_methods[] = {
@@ -1768,6 +1958,7 @@ PyMethodDef asuspi_gpio_methods[] = {
    {"pwmToneWrite", py_pwmToneWrite, METH_VARARGS, "Creates a square wave with given frequency for the given GPIO"},
    {"pwmSetFrequency", py_pwmSetFrequency, METH_VARARGS, "Set up the frequency of PWM clock source."},
    {"pwmSetPeriod", py_pwmSetPeriod, METH_VARARGS, "Writes the period to the PWM register for the given GPIO."},
+   {"setGpioDrive", py_setGpioDrive, METH_VARARGS, "Set up the drive strength for the given GPIO."},
    {NULL, NULL, 0, NULL}
 };
 
@@ -1844,7 +2035,8 @@ PyMODINIT_FUNC initGPIO(void)
 	if (!PyEval_ThreadsInitialized())
 		PyEval_InitThreads();
 	// register exit functions - last declared is called first
-	if (Py_AtExit(cleanup) != 0)
+	//Exit ==> Segmentation fault
+	/*if (Py_AtExit(cleanup) != 0)
 	{
 		printf("exit 1\n");
 		setup_error = 1;
@@ -1873,5 +2065,5 @@ PyMODINIT_FUNC initGPIO(void)
 	return module;
 #else
 	return;
-#endif
+#endif*/
 }
