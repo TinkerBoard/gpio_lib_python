@@ -53,7 +53,7 @@ SOFTWARE.
 int gpio_mode;
 const int pin_to_gpio_rev[41];
 const int (*pin_to_gpio)[41];
-int gpio_direction[200];
+int gpio_direction[300];
 asuspi_info asuspiinfo;
 int setup_error;
 int module_setup;

@@ -1980,8 +1980,8 @@ PyMethodDef asuspi_gpio_methods[] = {
    {"pwmToneWrite", py_pwmToneWrite, METH_VARARGS, "Creates a square wave with given frequency for the given GPIO"},
    {"pwmSetFrequency", py_pwmSetFrequency, METH_VARARGS, "Set up the frequency of PWM clock source."},
    {"pwmSetPeriod", py_pwmSetPeriod, METH_VARARGS, "Writes the period to the PWM register for the given GPIO."},
-   //{"setGpioDrive", py_setGpioDrive, METH_VARARGS, "Set up the drive strength for the given GPIO."},
-   //{"getGpioDrive", py_getGpioDrive, METH_VARARGS, "Return the current drive strength."},
+   {"setGpioDrive", py_setGpioDrive, METH_VARARGS, "Set up the drive strength for the given GPIO."},
+   {"getGpioDrive", py_getGpioDrive, METH_VARARGS, "Return the current drive strength."},
    {NULL, NULL, 0, NULL}
 };
 
@@ -2014,8 +2014,8 @@ PyMODINIT_FUNC initGPIO(void)
 
 	define_constants(module);
 
-	for (i=0; i<200; i++)
-	gpio_direction[i] = -1;
+	for (i=0; i<300; i++)
+		gpio_direction[i] = -1;
 
 	// detect board revision and set up accordingly
 
