@@ -73,8 +73,6 @@ int gpio_export(unsigned int gpio)
     len = snprintf(str_gpio, sizeof(str_gpio), "%d", gpio);
     if(write(fd, str_gpio, len + 1) < 0)
 	{
-		close(fd);
-		return -1;
 	}
 	close(fd);
     return 0;
@@ -89,8 +87,6 @@ int gpio_unexport(unsigned int gpio)
     len = snprintf(str_gpio, sizeof(str_gpio), "%d", gpio);
     if(write(fd, str_gpio, len + 1) < 0)
 	{
-		close(fd);
-		return -1;
 	}
     close(fd);
     return 0;
@@ -110,16 +106,12 @@ int gpio_set_direction(unsigned int gpio, unsigned int in_flag)
 	{
         if (write(fd, "in", 3) < 0)
 		{
-			close(fd);
-			return -1;
 		}
 	}
     else
 	{
         if (write(fd, "out", 4) < 0)
 		{
-			close(fd);
-			return -1;
 		}
 	}
     close(fd);
@@ -139,8 +131,6 @@ int gpio_set_edge(unsigned int gpio, unsigned int edge)
 
     if(write(fd, stredge[edge], strlen(stredge[edge]) + 1) < 0)
 	{
-		close(fd);
-		return -1;
 	}
 	close(fd);
     return 0;
