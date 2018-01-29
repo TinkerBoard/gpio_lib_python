@@ -71,7 +71,7 @@ int gpio_export(unsigned int gpio)
     if ((fd = open("/sys/class/gpio/export", O_WRONLY)) < 0)
         return -1;
     len = snprintf(str_gpio, sizeof(str_gpio), "%d", gpio);
-    if(write(fd, str_gpio, len + 1) != -1)
+    if(write(fd, str_gpio, len + 1) < 0)
 	{
 		close(fd);
 		return -1;
@@ -87,7 +87,7 @@ int gpio_unexport(unsigned int gpio)
     if ((fd = open("/sys/class/gpio/unexport", O_WRONLY)) < 0)
         return -1;
     len = snprintf(str_gpio, sizeof(str_gpio), "%d", gpio);
-    if(write(fd, str_gpio, len + 1) != -1)
+    if(write(fd, str_gpio, len + 1) < 0)
 	{
 		close(fd);
 		return -1;
@@ -108,7 +108,7 @@ int gpio_set_direction(unsigned int gpio, unsigned int in_flag)
     }
     if (in_flag)
 	{
-        if (write(fd, "in", 3) != -1)
+        if (write(fd, "in", 3) < 0)
 		{
 			close(fd);
 			return -1;
@@ -116,7 +116,7 @@ int gpio_set_direction(unsigned int gpio, unsigned int in_flag)
 	}
     else
 	{
-        if (write(fd, "out", 4) != -1)
+        if (write(fd, "out", 4) < 0)
 		{
 			close(fd);
 			return -1;
@@ -137,7 +137,7 @@ int gpio_set_edge(unsigned int gpio, unsigned int edge)
         return -1;
 	}
 
-    if(write(fd, stredge[edge], strlen(stredge[edge]) + 1) != -1)
+    if(write(fd, stredge[edge], strlen(stredge[edge]) + 1) < 0)
 	{
 		close(fd);
 		return -1;
