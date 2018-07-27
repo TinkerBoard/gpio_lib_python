@@ -143,7 +143,7 @@ static PyObject *py_cleanup(PyObject *self, PyObject *args, PyObject *kwargs)
 			event_cleanup_all();
 
 			// set everything back to input
-			for (i=0; i<54; i++) 
+			for (i=0; i<258; i++) 
 			{
 				if (gpio_direction[i] != -1)
 				{
