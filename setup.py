@@ -20,7 +20,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
-from distutils.core import setup, Extension
+from setuptools import setup, Extension
 
 classifiers = ['Development Status :: 5 - Production/Stable',
                'Operating System :: POSIX :: Linux',
