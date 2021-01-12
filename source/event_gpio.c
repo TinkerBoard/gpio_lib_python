@@ -98,6 +98,8 @@ int gpio_set_direction(unsigned int gpio, unsigned int in_flag)
     char filename[45]; //command length=30 gpio max length=10 '\0' length=1 flexible length=10%(4)
     snprintf(filename, sizeof(filename), "/sys/class/gpio/gpio%d/direction", gpio);
 
+    usleep(500000);
+
     if ((fd = open(filename, O_WRONLY)) < 0) 
 	{
         return -1;
