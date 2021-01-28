@@ -14,6 +14,3 @@ git clone https://github.com/TinkerBoard/gpio_lib_python.git
  GPIO.setmode(GPIO.ASUS)\
  GPIO.setup(17, GPIO.OUT)\
  GPIO.output(17, GPIO.HIGH)
-
-#More Informaion\
- Send an email to scorpio_chang@asus.com
