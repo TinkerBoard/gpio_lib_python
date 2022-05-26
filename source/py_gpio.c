@@ -280,11 +280,11 @@ static PyObject *py_setup_channel(PyObject *self, PyObject *args, PyObject *kwar
 		return NULL;
 		chanlist = NULL;
 	} 
-	else if PyList_Check(chanlist) 
+	else if (PyList_Check(chanlist))
 	{
 		// do nothing
 	} 
-	else if PyTuple_Check(chanlist) 
+	else if (PyTuple_Check(chanlist))
 	{
 		chantuple = chanlist;
 		chanlist = NULL;
