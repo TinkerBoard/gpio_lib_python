@@ -8,6 +8,8 @@ git clone https://github.com/TinkerBoard/gpio_lib_python.git
  sudo apt-get install python-dev python2.7-dev python3-dev\
  cd ASUS_GPIO_PYTHON_PATH/gpio/\
  sudo python setup.py install
+ * if encounter multiple definition error, use
+ `CFLAGS="-fcommon" python setup.py install`
 
 #A Simple Python Program\
  import ASUS.GPIO as GPIO\
