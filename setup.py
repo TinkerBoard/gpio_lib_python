@@ -45,16 +45,3 @@ setup(name             = 'ASUS.GPIO',
       classifiers      = classifiers,
       packages         = ['ASUS'],
       ext_modules      = [Extension('ASUS.GPIO', ['source/py_gpio.c', 'source/c_gpio.c', 'source/cpuinfo.c', 'source/event_gpio.c', 'source/soft_pwm.c', 'source/py_pwm.c', 'source/common.c', 'source/constants.c', 'source/wiringTB.c'])])
-
-setup(name             = 'RPi.GPIO',
-      version          = '0.1',
-      author           = 'ASUS',
-      author_email     = 'ASUS@asus.com',
-      description      = 'A module to control ASUS GPIO channels',
-      long_description = open('README.txt').read() + open('CHANGELOG.txt').read(),
-      license          = 'MIT',
-      keywords         = 'ASUS GPIO',
-      url              = 'https://github.com/TinkerBoard/gpio_lib_python',
-      classifiers      = classifiers,
-      packages         = ['RPi'],
-      ext_modules      = [Extension('RPi.GPIO', ['source/py_gpio_RPi.c', 'source/c_gpio.c', 'source/cpuinfo.c', 'source/event_gpio.c', 'source/soft_pwm.c', 'source/py_pwm.c', 'source/common.c', 'source/constants.c', 'source/wiringTB.c'])])
